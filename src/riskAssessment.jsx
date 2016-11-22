@@ -1,44 +1,109 @@
-import React from 'react';
-import { RaisedButton } from 'material-ui';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import { Card, CardText, CardTitle } from 'material-ui/Card';
-import { riskFactors, optionColors } from './mock-data';
+import React, { Component } from 'react';
+import { RaisedButton, TextField, RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui';
+import request from './dataService';
 
-var RiskAssessment = () => {
+const cardStyle = {marginBottom: 20};
+const optionColors = ['#009E03', '#7FAD00', '#DECF00', '#D4A200', '#B50000'];
 
-	var cards = riskFactors.map((r, i) => {
+class RiskAssessment extends Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			riskDimensions: [],
+			answers: []
+		};
+	}
+	componentDidMount(){
+		request('riskDimensions').then(riskDimensions => {
+			this.setState({riskDimensions});
+		}).catch(err => {
+			console.log(err);
+			throw err;
+		});
+		// this.props.loadRiskDimensions();
+	}
+	handleOptionChange(answer){
+		this.setState({
+			answers: [
+				...this.state.answers.filter(a => a.id !== answer.id),
+				answer
+			]
+		});
+	}
+	handleSubmit(){
+		request('riskAssessment', {
+			answers: this.state.answers,
+			notes: this.state.notes,
+			assesser: 0,
+			assessee: 1
+		}).then(data => console.log(data)).catch(err => console.log(err));
+	}
+	render(){
 
-		var radios = r.options.map((optionText, j) => {
+		var assessee = this.props.people.find(p => p.id === +this.props.assessee) || {};
+		var cards = this.state.riskDimensions.map(r => {
+
+			var radios = r.options.map(o => {
+				return (
+					<RadioButton
+						key={o.ord}
+						value={o.ord}
+						label={o.description.replace(/consultant/ig, assessee.first_name)}
+						style={{marginBottom: 16, borderLeft: `5px solid ${optionColors[o.ord]}`, paddingLeft: 16}}
+					/>
+				);
+			});
+
 			return (
-				<RadioButton
-					key={j}
-					value={j}
-					label={optionText}
-					style={{marginBottom: 16, borderLeft: `5px solid ${optionColors[j]}`, paddingLeft: 16}}
-				/>
+				<Card key={r.id} style={cardStyle}>
+					<CardTitle title={r.description.replace(/consultant/ig, assessee.first_name)} />
+					<CardText>
+						<RadioButtonGroup
+							name="riskOptions"
+							onChange={(e, value) => this.handleOptionChange({id: r.id, value})}
+						>{radios}</RadioButtonGroup>
+					</CardText>
+				</Card>
 			);
 		});
 
 		return (
-			<Card key={i} style={{marginBottom: 20}}>
-				<CardTitle title={r.text} />
-				<CardText>
-					<RadioButtonGroup
-						name="riskOptions"
-						onChange={e => console.log(e)}
-					>{radios}</RadioButtonGroup>
-				</CardText>
-			</Card>
-		)
-	});
+			<div>
+				{ cards }
+				<Card style={cardStyle}>
+					<CardText>
+						<TextField
+				      floatingLabelText="Notes and comments."
+				      multiLine={true}
+				      rows={3}
+							style={{width: '100%'}}
+							value={this.state.notes}
+							onChange={e => this.setState({notes: e.target.value})}
+				    />
+					</CardText>
+				</Card>
 
-	return (
-		<div>
-			<p>This is where you can assess risks or whatever.</p>
-			{ cards }
-			<RaisedButton label='Submit' primary={true} />
-		</div>
-	);
-};
+				<RaisedButton label='Submit' primary={true} onClick={() => this.handleSubmit()} />
+			</div>
+		);
+	}
+}
+
+// import { connect } from 'react-redux'
+// export default connect(
+// 	(state, ownProps) => { // map state to props
+// 		return {
+// 			riskDimensions: state.riskDimensions || []
+// 		};
+// 	},
+// 	(dispatch, ownProps) => { // map dispatch to props
+// 		return {
+// 			loadRiskDimensions: () => dispatch({type: 'LOAD_RISK_DIMENSIONS'}),
+// 			handleOptionChange: answer => {
+//
+// 			}
+// 		};
+// 	}
+// )(RiskAssessment);
 
 export default RiskAssessment;
