@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RaisedButton, TextField, RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui';
-import request from './dataService';
+import request from './../dataService';
 
 const cardStyle = {marginBottom: 20};
 const optionColors = ['#009E03', '#7FAD00', '#DECF00', '#D4A200', '#B50000'];
@@ -12,14 +12,12 @@ class RiskAssessment extends Component {
 			riskDimensions: [],
 			answers: []
 		};
+		console.log(this.props);
 	}
 	componentDidMount(){
 		request('riskDimensions').then(riskDimensions => {
 			this.setState({riskDimensions});
-		}).catch(err => {
-			console.log(err);
-			throw err;
-		});
+		}).catch(this.props.onError);
 		// this.props.loadRiskDimensions();
 	}
 	handleOptionChange(answer){
@@ -34,8 +32,8 @@ class RiskAssessment extends Component {
 		request('riskAssessment', {
 			answers: this.state.answers,
 			notes: this.state.notes,
-			assesser: 0,
-			assessee: 1
+			assesser: this.props.userID,
+			assessee: this.props.assessee
 		}).then(data => console.log(data)).catch(err => console.log(err));
 	}
 	render(){

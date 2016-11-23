@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppBar, DropDownMenu, MenuItem } from 'material-ui';
 
-var Bar = props => {
+var appBar = props => {
 
 	var userSelector = (
 		<DropDownMenu
@@ -16,10 +16,6 @@ var Bar = props => {
 		}</DropDownMenu>
 	);
 
-	// var userSelector = props.user ? <FlatButton label={
-	// 	props.user.first_name + ' ' + props.user.last_name
-	// } /> : null;
-
 	return (
 		<AppBar
 			title={props.title}
@@ -29,4 +25,4 @@ var Bar = props => {
 	);
 };
 
-export default Bar;
+export default appBar;

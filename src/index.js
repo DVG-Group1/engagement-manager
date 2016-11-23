@@ -12,7 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 // import reducer from './reducer';
 // var store = createStore(reducer);
 
-import Main from './Main';
+import Main from './components/Main';
 
 render(
 	// <Provider store={store}>

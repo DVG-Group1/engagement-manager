@@ -6,7 +6,7 @@ const cardStyle = {marginBottom: 20};
 const ConsultantChooser = props => {
 
 	var cards = props.people.filter(
-		p => p.first_name && (p.manager_id === props.userID)
+		p => p.last_name && (p.manager_id === props.userID)
 	).map(r => {
 
 		return (

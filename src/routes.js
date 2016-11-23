@@ -2,10 +2,10 @@ import AssignmentIcon from 'material-ui/svg-icons/action/assignment';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import HomeIcon from 'material-ui/svg-icons/action/home';
 
-import ConsultantChooser from './consultantChooser';
-import RiskAssessment from './riskAssessment';
-import ViewData from './viewData';
-import Home from './home';
+import ConsultantChooser from './components/consultantChooser';
+import RiskAssessment from './components/riskAssessment';
+import ViewData from './components/viewData';
+import Home from './components/home';
 
 var routes = [{
 	label: 'Home',

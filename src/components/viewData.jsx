@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { Table, TableHeader, TableHeaderColumn, TableRow, TableRowColumn, TableBody,
-	Card, CardText, CardActions, CardTitle,
-	MenuItem, RaisedButton, FlatButton, Dialog,
+	Card, CardText, CardTitle,
+	// CardActions, RaisedButton,
+	MenuItem, FlatButton, Dialog,
 	SelectField, DatePicker, TextField
 	} from 'material-ui';
-import request from './dataService';
+import request from './../dataService';
 
 var displayNames = {
 	people: r => r && r.first_name ? r.first_name + ' ' + r.last_name : '',
 	risk_dimensions: r => r.description,
 	risk_assessments: (r, dataIndex) => `${displayNames.people(dataIndex.people[r.assesser])}'s assessment of ${displayNames.people(dataIndex.people[r.assessee])} on ${r.date_added}`
+};
+var getDisplayName = (tableName, row, dataIndex) => {
+	return row ? row.id + ': ' + displayNames[tableName](row, dataIndex) : null;
 };
 
 var relationships = {
@@ -29,6 +33,7 @@ class Editor extends Component {
 		};
 	}
 	handleValueChange = (col, val) => {
+		console.log('Changing', col, val);
 		var editRecord = {...this.state.editRecord};
 		editRecord[col] = val;
 		this.setState({editRecord});
@@ -37,35 +42,43 @@ class Editor extends Component {
 		// var origRow = table.rows[this.state.editRowIndex];
 		var keys = this.props.table.columns.map(c => c.column_name);
 
-		var inputs = keys.filter(col => col !== 'id').map(col => {
+		var inputs = keys.filter(key => key !== 'id').map(key => {
 			var input;
-			var rel = relationships[this.props.table.name + '.' + col];
+			var rel = relationships[this.props.table.name + '.' + key];
 			var inputProps = {
-				value: this.state.editRecord[col],
-				floatingLabelText: col,
-				style: {width: '100%'},
-				onChange: e => this.handleValueChange(col, e.target.value)
+				value: this.state.editRecord[key],
+				floatingLabelText: key,
+				style: {width: '100%'}
 			};
-			if (col.includes('date')){
+			if (key.includes('date')){
 				input = (
-					<DatePicker {...inputProps}/>
+					<DatePicker
+						onChange={(e, value) => this.handleValueChange(key, value)}
+						{...inputProps}
+					/>
 				)
 			} else if (rel){
 				input = (
-					<SelectField {...inputProps} >{
+					<SelectField
+						onChange={(e, k, value) => this.handleValueChange(key, value)}
+						{...inputProps}
+					>{
 						this.props.tables.find(t => t.name === rel).rows.map(r =>
-							<MenuItem key={r.id} value={r.id} primaryText={r.id + ': ' + displayNames[rel](r, this.props.dataIndex)} />
+							<MenuItem key={r.id} value={r.id} primaryText={getDisplayName(rel, r, this.props.dataIndex)} />
 						)
 					}</SelectField>
 				);
 			} else {
 				input = (
-					<TextField {...inputProps} />
+					<TextField
+						onChange={e => this.handleValueChange(key, e.target.value)}
+						{...inputProps}
+					/>
 				)
 			}
 
 			return (
-				<div key={col}>
+				<div key={key}>
 					{input}
 				</div>
 			);
@@ -106,6 +119,20 @@ class viewData extends Component {
 	}
 	componentDidMount(){
 		request('allData').then(tables => {
+
+			tables.forEach(t => {
+				t.rows.sort((a, b) => a.id - b.id);
+
+				var keys = t.columns.map(c => c.column_name);
+				keys.forEach(k => {
+					if (k.includes('date')){
+						t.rows.forEach(r => {
+							if (r[k]) r[k] = new Date(r[k]);
+						});
+					}
+				});
+			});
+
 			this.setState({tables});
 		}).catch(err => {
 			console.log(err);
@@ -137,9 +164,7 @@ class viewData extends Component {
 				editTable: null,
 				editRowIndex: null
 			});
-		}).catch(err => {
-			console.error(err);
-		});
+		}).catch(this.props.onError);
 	}
 	render(){
 
@@ -148,14 +173,6 @@ class viewData extends Component {
 				dex[r.id] = r;
 				return dex;
 			}, {});
-
-			// if (displayNames[t.name]){
-			// 	// res[t.name].rows = t.rows;
-			// 	res[t.name].dropdownOptions = t.rows.map(r => (
-			// 		<MenuItem key={r.id} value={r.id} primaryText={r.id + ': ' + displayNames[t.name](r, dataIndex)} />
-			// 	));
-			// }
-
 			return res;
 		}, {});
 
@@ -172,24 +189,24 @@ class viewData extends Component {
 							onCellClick={(rowNum) => this.openEditor(t.name, rowNum)}
 						>
 						  <TableHeader
-								displaySelectAll={true}
-			          adjustForCheckbox={true}
-			          enableSelectAll={true}
+								displaySelectAll={false}
+			          adjustForCheckbox={false}
+			          enableSelectAll={false}
 							>
 						    <TableRow>{
 									keys.map(col => <TableHeaderColumn key={col}>{ col }</TableHeaderColumn>)
 								}</TableRow>
 						  </TableHeader>
 						  <TableBody
-								deselectOnClickaway={false}
+								displayRowCheckbox={false}
 							>{
 								t.rows.map((row, i) => (
 									<TableRow key={i}>{
 										keys.map(col => {
 											var rel = relationships[t.name + '.' + col];
-											var input = row[col] + (rel ? ': ' + displayNames[rel](dataIndex[rel][row[col]], dataIndex) : '');
+											var input = rel ? getDisplayName(rel, dataIndex[rel][row[col]], dataIndex) : row[col];
 											return (
-												<TableRowColumn key={col}>{ input }</TableRowColumn>
+												<TableRowColumn key={col}>{ '' + input }</TableRowColumn>
 											);
 										})
 									}</TableRow>
@@ -197,12 +214,13 @@ class viewData extends Component {
 							}</TableBody>
 						</Table>
 					</CardText>
-					<CardActions>
-						<RaisedButton label='Add Row' onClick={() => this.addRow(t)} />
-					</CardActions>
 				</Card>
 			)
 		});
+
+		// <CardActions>
+		// 	<RaisedButton label='Add Row' onClick={() => this.addRow(t)} />
+		// </CardActions>
 
 		var editor = null;
 		if (this.state.editTable !== null){
