@@ -56,7 +56,7 @@ class Editor extends Component {
 						onChange={(e, value) => this.handleValueChange(key, value)}
 						{...inputProps}
 					/>
-				)
+				);
 			} else if (rel){
 				input = (
 					<SelectField
@@ -74,7 +74,7 @@ class Editor extends Component {
 						onChange={e => this.handleValueChange(key, e.target.value)}
 						{...inputProps}
 					/>
-				)
+				);
 			}
 
 			return (
@@ -199,6 +199,8 @@ class viewData extends Component {
 						  </TableHeader>
 						  <TableBody
 								displayRowCheckbox={false}
+								showRowHover={true}
+								style={{cursor: 'pointer'}}
 							>{
 								t.rows.map((row, i) => (
 									<TableRow key={i}>{
@@ -215,7 +217,7 @@ class viewData extends Component {
 						</Table>
 					</CardText>
 				</Card>
-			)
+			);
 		});
 
 		// <CardActions>

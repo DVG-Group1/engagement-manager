@@ -1,7 +1,18 @@
 import React from 'react';
 import { AppBar, DropDownMenu, MenuItem } from 'material-ui';
+import { connect } from 'react-redux';
 
-var appBar = props => {
+export default connect(
+	(state, ownProps) => ({
+		userID: state.userID,
+		people: state.people,
+		title: state.route.label
+	}),
+	dispatch => ({
+		changeUser: userID => dispatch({type: 'SET_USER_ID', userID}),
+		openDrawer: () => dispatch({type: 'OPEN_DRAWER'})
+	})
+)(props => {
 
 	var userSelector = (
 		<DropDownMenu
@@ -23,6 +34,4 @@ var appBar = props => {
 			iconElementRight={userSelector}
 		/>
 	);
-};
-
-export default appBar;
+});

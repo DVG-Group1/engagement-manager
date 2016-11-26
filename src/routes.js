@@ -25,6 +25,7 @@ var routes = [{
 	component: ViewData
 }, {
 	label: 'Risk Assessment',
+	path: 'new-risk-assessment',
 	regex: /^new-risk-assessment\/(\d+)$/,
 	params: ['assessee'],
 	component: RiskAssessment

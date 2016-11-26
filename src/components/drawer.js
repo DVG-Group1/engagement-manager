@@ -1,7 +1,17 @@
 import React from 'react';
 import { Drawer, MenuItem, AppBar } from 'material-ui';
+import { connect } from 'react-redux';
 
-var AppDrawer = props => (
+export default connect(
+	state => ({
+		drawerOpen: state.drawerOpen,
+		appName: state.route.label,
+		routes: state.routes
+	}),
+	dispatch => ({
+		closeDrawer: () => dispatch({type: 'CLOSE_DRAWER'})
+	})
+)(props => (
 	<Drawer
 		docked={false}
 		open={props.drawerOpen}
@@ -14,7 +24,7 @@ var AppDrawer = props => (
 		/>
 
 		{
-			props.routes.filter(r => r.path !== undefined).map(r => {
+			props.routes.filter(r => !r.regex).map(r => {
 				var Icon = r.icon;
 				return (
 					<a key={r.path} href={'#/' + r.path}>
@@ -30,7 +40,4 @@ var AppDrawer = props => (
 		}
 
 	</Drawer>
-);
-
-
-export default AppDrawer;
+));
