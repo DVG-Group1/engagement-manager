@@ -10,7 +10,8 @@ export const reducer = (state = {
 	riskAssessmentAnswers: {},
 	riskAssessmentNote: '',
 	people: [],
-	riskDimensions: []
+	riskDimensions: [],
+	showingDirectReports: {}
 }, action) => {
 	switch (action.type){
 	case 'LOADING': return {...state, loading: true};
@@ -39,7 +40,10 @@ export const reducer = (state = {
 		}
 	};
 
-	case 'SET_RISK_NOTE': return {...state, riskAssessmentNote: action.note};
+	case 'SET_RISK_NOTE': return {
+		...state,
+		riskAssessmentNote: action.note
+	};
 
 	case 'SAVED_RISK_ASSESSMENT': return {
 		...state,
@@ -47,6 +51,14 @@ export const reducer = (state = {
 		riskAssessmentAnswers: {},
 		riskAssessmentNote: '',
 		loading: false
+	};
+
+	case 'TOGGLE_SHOW_DIRECT_REPORTS': return {
+		...state,
+		showingDirectReports: {
+			...state.showingDirectReports,
+			[action.userID]: !state.showingDirectReports[action.userID]
+		}
 	};
 
 	case '@@redux/INIT': return state;

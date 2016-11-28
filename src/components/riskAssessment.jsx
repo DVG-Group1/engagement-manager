@@ -1,9 +1,9 @@
 import React from 'react';
 import { RaisedButton, TextField, RadioButton, RadioButtonGroup, Card, CardText, CardTitle } from 'material-ui';
-import request from './../dataService';
+import request from '../dataService';
+import { riskColors } from '../config';
 
 const cardStyle = {marginBottom: 20};
-const optionColors = ['#009E03', '#7FAD00', '#DECF00', '#D4A200', '#B50000'];
 
 import { connect } from 'react-redux';
 export default connect(
@@ -31,6 +31,7 @@ export default connect(
 				note: state.riskAssessmentNote
 			}).then(data => {
 				dispatch({type: 'SAVED_RISK_ASSESSMENT', data});
+				location.hash = '#/choose-consultant';
 			}).catch(error => {
 				dispatch({type: 'SET_ERROR', error});
 			});
@@ -54,7 +55,7 @@ export default connect(
 									key={i}
 									value={i}
 									label={o.description.replace(/consultant/ig, props.assessee.first_name)}
-									style={{marginBottom: 16, borderLeft: `5px solid ${optionColors[i]}`, paddingLeft: 16}}
+									style={{marginBottom: 16, borderLeft: `5px solid ${riskColors[i]}`, paddingLeft: 16}}
 								/>
 							))
 

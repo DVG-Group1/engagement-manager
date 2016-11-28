@@ -18,6 +18,7 @@ export default connect(
 					});
 				}
 				dispatch({type: 'SET_ROUTE', route, routeParams});
+				window.scrollTo(0, 0);
 			} else {
 				console.error(path + ' is invalid.');
 				history.back();
