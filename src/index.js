@@ -3,7 +3,7 @@ import 'babel-polyfill';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
-import { reducer } from './reducer';
+import reducer from './reducer';
 
 var store = createStore(
 	reducer,
@@ -17,6 +17,7 @@ import request from './dataService';
 request('init/' + store.getState().userID).then(data => {
 	store.dispatch({type: 'RECEIVED_DATA', data});
 }).catch(error => {
+	console.error(error);
 	store.dispatch({type: 'SET_ERROR', error});
 });
 

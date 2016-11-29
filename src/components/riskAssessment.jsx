@@ -33,6 +33,7 @@ export default connect(
 				dispatch({type: 'SAVED_RISK_ASSESSMENT', data});
 				location.hash = '#/choose-consultant';
 			}).catch(error => {
+				console.error(error);
 				dispatch({type: 'SET_ERROR', error});
 			});
 		})

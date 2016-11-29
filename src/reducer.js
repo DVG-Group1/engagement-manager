@@ -1,17 +1,20 @@
-// import { combineReducers } from 'redux';
-import routes from './routes';
+import { ls } from './utils';
 
-export const reducer = (state = {
+var reducer = (state = {
 	drawerOpen: false,
-	userID: 84,
-	routes,
-	route: routes[0],
+	userID: ls('userID'),
+	route: '',
 	loading: true,
+
 	riskAssessmentAnswers: {},
 	riskAssessmentNote: '',
+
 	people: [],
 	riskDimensions: [],
-	showingDirectReports: {}
+
+	showingDirectReports: {},
+
+	allTables: []
 }, action) => {
 	switch (action.type){
 	case 'LOADING': return {...state, loading: true};
@@ -25,11 +28,15 @@ export const reducer = (state = {
 	case 'CLOSE_DRAWER': return {...state, drawerOpen: false};
 	case 'OPEN_DRAWER': return {...state, drawerOpen: true};
 
-	case 'SET_USER_ID': return {...state, userID: action.userID};
+	case 'SET_USER_ID':
+		ls('userID', action.userID);
+		return {...state, userID: action.userID};
+
 	case 'SET_ROUTE': return {
 		...state,
 		route: action.route,
-		routeParams: action.routeParams
+		routeParams: action.routeParams,
+		drawerOpen: false
 	};
 
 	case 'SET_RISK_OPTION': return {
@@ -61,9 +68,33 @@ export const reducer = (state = {
 		}
 	};
 
+	case 'LOAD_ALL_DATA': return {
+		...state,
+		allTables: action.data,
+		loading: false,
+		editRecord: null
+	};
+	case 'OPEN_EDITOR': return {
+		...state,
+		editRecord: {
+			...action.editRecord,
+			editTableName: action.editTableName
+		}
+	};
+	case 'CLOSE_EDITOR': return {
+		...state,
+		editRecord: null
+	};
+	case 'EDIT_VALUE': return {
+		...state,
+		editRecord: {...state.editRecord, [action.key]: action.value}
+	};
+
 	case '@@redux/INIT': return state;
 	default:
 		console.log('Unknown action type', action);
 		return state;
 	}
 };
+
+export default reducer;

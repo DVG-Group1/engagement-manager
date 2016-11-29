@@ -17,7 +17,7 @@ export default connect(
 						routeParams[param] = match[i + 1];
 					});
 				}
-				dispatch({type: 'SET_ROUTE', route, routeParams});
+				dispatch({type: 'SET_ROUTE', route: route.path, routeParams});
 				window.scrollTo(0, 0);
 			} else {
 				console.error(path + ' is invalid.');

@@ -70,9 +70,9 @@ const ConsultantCardList = connect(
 							assessment.riskDimensions.filter(r => r.rating).map(riskDimension => {
 								var rating = riskDimension.rating.rating;
 								return (
-									<div key={riskDimension.id} style={{color: rating >= 3 ? riskColors[rating] : 'black'}}>{
-										(rating + 1) + ': ' + riskDimension.name
-									}</div>
+									<div key={riskDimension.id}>
+										<span style={{color: riskColors[rating]}}>{rating + 1}</span>: { riskDimension.name }
+									</div>
 								);
 							})
 						}</div>
@@ -103,7 +103,7 @@ const ConsultantCardList = connect(
 		);
 
 		var directReportCards = person.directReports.length > 0 && showingDirectReports && (
-			<CardText>
+			<CardText style={{marginLeft: 20}}>
 				<h3>{ person.first_name + '\'s Direct Reports' }</h3>
 				<ConsultantCardList userID={ person.id } />
 			</CardText>
@@ -126,6 +126,12 @@ const ConsultantCardList = connect(
 			</Card>
 		);
 	});
+
+	if (!cards.length){
+		cards = (
+			<p>You have no direct reports.</p>
+		);
+	}
 
 	// <Tabs value={props.chooseConsultantFilter} onChange={props.setConsultantFilter}>
 	// 	<Tab label="Direct Reports" value="direct"/>

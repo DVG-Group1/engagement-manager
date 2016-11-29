@@ -1,8 +1,11 @@
 import React from 'react';
+import dog from '../derpdog.jpg';
 
 var Home = () => {
 	return (
-		<h1>This is the home page.</h1>
+		<div>
+			<img src={dog} role="presentation"/>
+		</div>
 	);
 };
 
