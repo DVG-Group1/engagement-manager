@@ -1,9 +1,8 @@
 import React from 'react';
 import AppBar from './appBar';
 import AppDrawer from './appDrawer';
-import { connect } from 'react-redux';
 
-var App = ({error, loading, routes, route, children}) => (
+export default ({error, loading, routes, route, children}) => (
 	<div>
 		<AppDrawer routes={routes} route={route} />
 		<AppBar route={route} />
@@ -29,12 +28,3 @@ var App = ({error, loading, routes, route, children}) => (
 
 	</div>
 );
-
-export default connect(
-	(state, ownProps) => ({
-		error: state.main.error,
-		loading: state.main.loading,
-		routes: ownProps.route.childRoutes,
-		route: ownProps.routes[ownProps.routes.length - 1]
-	})
-)(App);

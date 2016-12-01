@@ -1,8 +1,8 @@
 import React from 'react';
 import { MenuItem, FlatButton, Dialog, SelectField, DatePicker, TextField } from 'material-ui';
 import { connect } from 'react-redux';
-import { relationships } from '../config';
-import request from './../dataService';
+import { relationships } from '../../config';
+import request from '../../dataService';
 
 const ValueEditor = ({editRecord, tables, editValue, displayNames, closeEditor, saveRecord}) => {
 

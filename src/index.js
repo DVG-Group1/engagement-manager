@@ -7,8 +7,9 @@ import createLogger from 'redux-logger';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
-import reducers from './reducers';
-import routeGetter from './routes';
+import reducers from './app/reducer';
+import routes from './app/route';
+import { decorateRoutes } from './dataService';
 
 // Needed for onTouchTap http://stackoverflow.com/a/34015469/988941
 require('react-tap-event-plugin')();
@@ -26,7 +27,8 @@ var store = createStore(
 );
 
 const history = syncHistoryWithStore(browserHistory, store);
-var routes = routeGetter(store);
+
+decorateRoutes(routes, store);
 
 render(
 	<MuiThemeProvider>

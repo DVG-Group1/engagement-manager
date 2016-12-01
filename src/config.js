@@ -8,3 +8,9 @@ export const relationships = {
 	'risk_ratings.risk_dimension_id': 'risk_dimensions',
 	'risk_ratings.risk_assessment_id': 'risk_assessments'
 };
+
+export const displayNameFuncs = {
+	people: r => r && r.first_name ? r.first_name + ' ' + r.last_name : '',
+	risk_dimensions: r => r.description,
+	risk_assessments: (r, tables) => `${displayNameFuncs.people(tables.people.rows.find(p => p.id === r.assesser))}'s assessment of ${displayNameFuncs.people(tables.people.rows.find(p => p.id === r.assessee))} on ${r.date_added}`
+};

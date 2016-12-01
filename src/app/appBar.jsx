@@ -10,6 +10,7 @@ var Bar = ({userID, managers, route, changeUser, openDrawer}) => {
 			labelStyle={{color: 'white'}}
 			value={userID}
 			onChange={(e,k,value) => changeUser(value)}
+			style={{marginTop: -4}}
 		>{
 			managers.map(p =>
 				<MenuItem key={p.id} value={p.id} primaryText={p.first_name + ' ' + p.last_name} />
