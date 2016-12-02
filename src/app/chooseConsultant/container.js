@@ -29,9 +29,8 @@ export default connect(
 
 			return {
 				label: person.first_name + ' ' + person.last_name + (
-					person.riskLevel >= 3 ? ' - ' + (person.riskLevel === 3 ? 'At Risk' : 'High Risk') : ''
+					riskLevel >= 3 ? ' - ' + (riskLevel === 3 ? 'At Risk' : 'High Risk') : ''
 				),
-				color: person.riskLevel >= 3 ? riskColors[person.riskLevel] : 'black',
 				assessments,
 				lastAssessed: assessments[0] ? Date.parse(assessments[0].date_added) : 0,
 				riskLevel,

@@ -17,10 +17,8 @@ export default {
 		};
 		case 'SAVED_RISK_ASSESSMENT': return {
 			...state,
-			...action.data,
 			answers: {},
-			note: '',
-			loading: false
+			note: ''
 		};
 		default: return state;
 		}

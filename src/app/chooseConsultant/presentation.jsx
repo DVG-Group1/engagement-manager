@@ -14,20 +14,27 @@ export default ({directReports, showingDirectReports, toggleshowDirectReports, r
 	var cards = directReports.map(person => {
 
 		var assessmentList = person.assessments.length && (
-			<CardText style={{maxHeight: 300, overflowY: 'auto'}}>{
+			<CardText style={{maxHeight: 120, overflowY: 'auto'}}>{
 				person.assessments.map(assessment => (
 					<div key={assessment.id}>
 						<strong>Assessent on { formatDate(assessment.date_added) }</strong>
-						<div style={{marginLeft: 15}}>{
-							assessment.riskDimensions.filter(r => r.rating).map(riskDimension => (
-								<div key={riskDimension.id}>
-									<span style={{color: riskColors[riskDimension.rating.rating]}}>
-										{riskDimension.rating.rating + 1}
-									</span>
-									{ ': ' + riskDimension.name }
-								</div>
-							))
-						}</div>
+						<div style={{marginLeft: 15}}>
+							{
+								assessment.riskDimensions.filter(r => r.rating).map(riskDimension => (
+									<div key={riskDimension.id}>
+										<span style={{color: riskColors[riskDimension.rating.rating]}}>
+											{riskDimension.rating.rating + 1}
+										</span>
+										{ ': ' + riskDimension.name }
+									</div>
+								))
+							}
+							{
+								assessment.note && (
+									<div>Note: { assessment.note }</div>
+								)
+							}
+						</div>
 					</div>
 				))
 			}</CardText>
@@ -36,7 +43,7 @@ export default ({directReports, showingDirectReports, toggleshowDirectReports, r
 		//<RiskGraph assessments={person.assessments}/>
 
 		var title = (
-			<span style={{ color: person.color }}>{ person.label }</span>
+			<span style={{ color: riskColors[person.riskLevel] }}>{ person.label }</span>
 		);
 
 		var showDirectReports = showingDirectReports[person.id];

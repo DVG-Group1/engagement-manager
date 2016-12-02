@@ -16,6 +16,6 @@ export default ({tables, displayNames, openEditor, relationships}) => (
 				/>
 			))
 		}
-		<Editor displayNames={displayNames}/>
+		<Editor displayNames={displayNames} relationships={relationships}/>
 	</div>
 );

@@ -37,7 +37,7 @@ var appReducers = {
 		case 'LOADED': return {...state, loading: false};
 		case 'SET_ERROR':
 			window.scrollTo(0, 0);
-			return {...state, error: action.error};
+			return {...state, error: action.error, loading: false};
 		case '@@router/LOCATION_CHANGE':
 			window.scrollTo(0, 0);
 			return state;

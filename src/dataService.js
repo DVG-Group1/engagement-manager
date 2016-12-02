@@ -35,8 +35,20 @@ export const decorateRoutes = (route, store) => {
 		};
 	}
 	if (route.childRoutes){
-		route.childRoutes.forEach(decorateRoutes, store);
+		route.childRoutes.forEach(r => decorateRoutes(r, store));
 	}
+};
+
+export const save = (resource, getData, actionType, onSuccess) => (dispatch, getState) => {
+	dispatch({type: 'LOADING'});
+	request(resource, getData(getState())).then(data => {
+		dispatch({type: actionType, data});
+		dispatch({type: 'LOADED'});
+		if (onSuccess) onSuccess();
+	}).catch(error => {
+		console.error(error);
+		dispatch({type: 'SET_ERROR', error});
+	});
 };
 
 export default request;

@@ -1,10 +1,9 @@
 import React from 'react';
 import { MenuItem, FlatButton, Dialog, SelectField, DatePicker, TextField } from 'material-ui';
 import { connect } from 'react-redux';
-import { relationships } from '../../config';
-import request from '../../dataService';
+import { save } from '../../dataService';
 
-const ValueEditor = ({editRecord, tables, editValue, displayNames, closeEditor, saveRecord}) => {
+const ValueEditor = ({editRecord, tables, editValue, displayNames, closeEditor, saveRecord, relationships}) => {
 
 	if (!editRecord) return null;
 
@@ -78,20 +77,12 @@ export default connect(
 	(state, ownProps) => ({
 		tables: state.viewData.tables,
 		editRecord: state.viewData.editRecord,
-		displayNames: ownProps.displayNames
+		displayNames: ownProps.displayNames,
+		relationships: ownProps.relationships
 	}),
 	dispatch => ({
 		editValue: (key, value) => dispatch({type: 'EDIT_VALUE', key, value}),
 		closeEditor: () => dispatch({type: 'CLOSE_EDITOR'}),
-		saveRecord: () => dispatch((dispatch, getState) => {
-			var state = getState();
-			dispatch({type: 'LOADING'});
-			request('saveRecord', state.viewData.editRecord).then(data => {
-				dispatch({type: 'LOAD_ALL_DATA', data});
-			}).catch(error => {
-				console.error(error);
-				dispatch({type: 'SET_ERROR', error});
-			});
-		})
+		saveRecord: () => dispatch(save('saveRecord', state => state.viewData.editRecord, 'LOAD_ALL_DATA'))
 	})
 )(ValueEditor);
