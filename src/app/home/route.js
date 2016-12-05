@@ -3,7 +3,7 @@ import component from './presentation';
 
 export default {
 	label: 'Home',
-	path: 'home',
+	path: '/home',
 	icon,
 	component
 };

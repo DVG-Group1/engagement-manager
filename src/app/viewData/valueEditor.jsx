@@ -3,13 +3,13 @@ import { MenuItem, FlatButton, Dialog, SelectField, DatePicker, TextField } from
 import { connect } from 'react-redux';
 import { save } from '../../dataService';
 
-const ValueEditor = ({editRecord, tables, editValue, displayNames, closeEditor, saveRecord, relationships}) => {
+const ValueEditor = ({editRecord, editTableName, tables, editValue, displayNames, closeEditor, saveRecord, relationships}) => {
 
 	if (!editRecord) return null;
 
-	var inputs = tables[editRecord.editTableName].columns.filter(col => col.column_name !== 'id').map(col => {
+	var inputs = tables[editTableName].columns.filter(col => col.column_name !== 'id').map(col => {
 		var key = col.column_name;
-		var rel = relationships[editRecord.editTableName + '.' + key];
+		var rel = relationships[editTableName + '.' + key];
 		var inputProps = {
 			value: editRecord[key],
 			floatingLabelText: key,
@@ -61,12 +61,13 @@ const ValueEditor = ({editRecord, tables, editValue, displayNames, closeEditor, 
 				<FlatButton
 					label="Save"
 					primary={true}
-					onTouchTap={saveRecord}
+					onTouchTap={() => saveRecord(editTableName)}
 				/>
 			]}
 			modal={true}
 			open={true}
 			onRequestClose={closeEditor}
+			autoScrollBodyContent={true}
 		>
 			{inputs}
 		</Dialog>
@@ -77,12 +78,13 @@ export default connect(
 	(state, ownProps) => ({
 		tables: state.viewData.tables,
 		editRecord: state.viewData.editRecord,
+		editTableName: state.viewData.editTableName,
 		displayNames: ownProps.displayNames,
 		relationships: ownProps.relationships
 	}),
 	dispatch => ({
 		editValue: (key, value) => dispatch({type: 'EDIT_VALUE', key, value}),
 		closeEditor: () => dispatch({type: 'CLOSE_EDITOR'}),
-		saveRecord: () => dispatch(save('saveRecord', state => state.viewData.editRecord, 'LOAD_ALL_DATA'))
+		saveRecord: editTableName => dispatch(save('saveRecord/' + editTableName, state => state.viewData.editRecord, 'LOAD_ALL_DATA'))
 	})
 )(ValueEditor);

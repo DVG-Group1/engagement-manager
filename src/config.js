@@ -1,1 +1,7 @@
-export const riskColors = ['#009E03', '#7FAD00', '#DECF00', '#D4A200', '#B50000'];
+export const riskColors = {
+	1: '#009E03',
+	2: '#7FAD00',
+	3: '#DECF00',
+	4: '#D4A200', 
+	5: '#B50000'
+};

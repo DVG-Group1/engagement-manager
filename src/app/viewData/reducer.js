@@ -11,10 +11,8 @@ export default {
 		};
 		case 'OPEN_EDITOR': return {
 			...state,
-			editRecord: {
-				...action.editRecord,
-				editTableName: action.editTableName
-			}
+			editTableName: action.editTableName,
+			editRecord: {...action.editRecord} // must copy it so it doesn't edit the original
 		};
 		case 'CLOSE_EDITOR': return {
 			...state,

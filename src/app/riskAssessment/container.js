@@ -10,7 +10,7 @@ export default connect(
 			r.options = state.data.riskOptions.filter(o => o.risk_dimension_id === r.id);
 			return r;
 		}),
-		assessee: state.data.people.find(p => p.id === +ownProps.params.assessee) || {},
+		assessee_id: state.data.people.find(p => p.id === +ownProps.params.assessee_id) || {},
 		answers: state.riskAssessment.answers,
 		note: state.riskAssessment.note,
 		riskColors
@@ -21,8 +21,8 @@ export default connect(
 		handleSubmit: () => dispatch(save(
 			'riskAssessment',
 			state => ({
-				assesser: state.userID,
-				assessee: +ownProps.params.assessee,
+				assesser_id: state.userID,
+				assessee_id: +ownProps.params.assessee_id,
 				answers: state.riskAssessment.answers,
 				note: state.riskAssessment.note
 			}),

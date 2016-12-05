@@ -3,10 +3,15 @@ import component from './container';
 import reducer from './reducer';
 
 export default {
-	label: 'Choose a Consultant',
-	drawerLabel: 'Risk Assessments',
-	path: 'choose-consultant',
+	label: 'Risk Assessments',
+	path: '/risk-assessments',
 	icon,
 	component,
-	reducer
+	reducer,
+	// getSubItems: state => (state.data.people || []).filter(p => p.manager_id === state.userID).map(p => {
+	// 	return {
+	// 		label: p.first_name + ' ' + p.last_name,
+	// 		path: '/risk-assessments/' + p.id
+	// 	};
+	// })
 };

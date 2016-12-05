@@ -3,12 +3,12 @@ import { RaisedButton, TextField, RadioButton, RadioButtonGroup, Card, CardText,
 
 const cardStyle = {marginBottom: 20};
 
-export default ({riskDimensions, assessee, answers, note, setRiskOption, setRiskNote, handleSubmit, riskColors}) => (
+export default ({riskDimensions, assessee_id, answers, note, setRiskOption, setRiskNote, handleSubmit, riskColors}) => (
 	<div>
 		{
 			riskDimensions.map(r => (
 				<Card key={r.id} style={cardStyle}>
-					<CardTitle title={r.description.replace(/consultant/ig, assessee.first_name)} />
+					<CardTitle title={r.description.replace(/consultant/ig, assessee_id.first_name)} />
 					<CardText>
 						<RadioButtonGroup
 							name="riskOptions"
@@ -16,12 +16,12 @@ export default ({riskDimensions, assessee, answers, note, setRiskOption, setRisk
 							onChange={(e, value) => setRiskOption(r.id, value)}
 						>{
 
-							r.options.map((o, i) => (
+							r.options.map(o => (
 								<RadioButton
-									key={i}
-									value={i}
-									label={o.description.replace(/consultant/ig, assessee.first_name)}
-									style={{marginBottom: 16, borderLeft: `5px solid ${riskColors[i]}`, paddingLeft: 16}}
+									key={o.risk_val}
+									value={o.risk_val}
+									label={o.description.replace(/consultant/ig, assessee_id.first_name)}
+									style={{marginBottom: 16, borderLeft: `5px solid ${riskColors[o.risk_val]}`, paddingLeft: 16}}
 								/>
 							))
 
