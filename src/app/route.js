@@ -3,6 +3,7 @@ import home from './home/route';
 import chooseConsultant from './chooseConsultant/route';
 import riskAssessment from './riskAssessment/route';
 import viewData from './viewData/route';
+import login from './login/route';
 
 export default {
 	path: '/',
@@ -13,6 +14,7 @@ export default {
 		home,
 		chooseConsultant,
 		riskAssessment,
-		viewData
+		viewData,
+		login
 	]
 };

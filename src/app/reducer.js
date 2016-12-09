@@ -10,12 +10,33 @@ var appReducers = {
 		default: return state;
 		}
 	},
-
-	userID: (state = ls('userID'), action) => {
+	menuOpen: (state = false, action) => {
 		switch (action.type){
-		case 'SET_USER_ID':
-			ls('userID', action.userID);
-			return action.userID;
+		case 'CLOSE_MENU':
+		case '@@router/LOCATION_CHANGE': return false;
+		case 'OPEN_MENU': return true;
+		default: return state;
+		}
+	},
+
+	userID: (state = '', action) => {
+		switch (action.type){
+		case 'SET_TOKEN':
+
+			var token = action.token;
+			ls('token', token);
+
+			if (token){
+				try {
+					return JSON.parse(atob(token.split('.')[1])).id;
+				} catch (e){
+					console.log('Token error', e, token);
+				}
+			}
+			return '';
+		case 'LOG_OUT':
+			ls('token', '');
+			return '';
 		default: return state;
 		}
 	},
@@ -23,18 +44,21 @@ var appReducers = {
 	data: (state = {
 		people: [],
 		riskAssessments: [],
-		riskDimensions: []
+		riskDimensions: [],
+		riskRatings: [],
+		riskOptions: []
 	}, action) => {
 		return action.type === 'RECEIVED_DATA' ? {...state, ...action.data} : state;
 	},
 
 	main: (state = {
-		loading: true,
+		loading: false,
 		error: false
 	}, action) => {
 		switch (action.type){
 		case 'LOADING': return {...state, loading: true};
 		case 'LOADED': return {...state, loading: false};
+		case 'SET_REDIRECT': return {...state, redirect: action.path};
 		case 'SET_ERROR':
 			window.scrollTo(0, 0);
 			return {...state, error: action.error, loading: false};

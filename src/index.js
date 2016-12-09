@@ -9,7 +9,7 @@ import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
 import reducers from './app/reducer';
 import routes from './app/route';
-import { decorateRoutes } from './dataService';
+import decorateRoutes from './routeDecorator';
 
 // Needed for onTouchTap http://stackoverflow.com/a/34015469/988941
 require('react-tap-event-plugin')();
@@ -27,8 +27,10 @@ var store = createStore(
 );
 
 const history = syncHistoryWithStore(browserHistory, store);
-
 decorateRoutes(routes, store);
+
+import { ls } from './utils';
+store.dispatch({type: 'SET_TOKEN', token: ls('token')});
 
 render(
 	<MuiThemeProvider>

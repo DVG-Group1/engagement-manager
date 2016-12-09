@@ -1,54 +1,37 @@
-// const convertTypes = tables => {
-// 	Object.keys(tables).forEach(tableName => {
-// 		Object.keys(tables[tableName][0] || {}).filter(col => col.includes('date')).forEach(col => {
-// 			tables[tableName].forEach(row => {
-// 				row[col] = new Date(row[col]);
-// 			});
-// 		});
-// 	});
-// 	return tables;
-// };
-
-const request = (path, data) => {
-	if (data){
-		data = {
-			method: 'POST',
-			mode: 'cors',
-			body: JSON.stringify(data),
-			headers: new Headers({'Content-Type': 'application/json'})
-		};
-	}
-	return fetch(`http://localhost:3001/${path}`, data).then(r => r.json());
-};
-
-export const decorateRoutes = (route, store) => {
-	if (route.loader){
-		route.onEnter = () => {
-			store.dispatch({type: 'LOADING'});
-			request(route.loader.resource).then(data => {
-				store.dispatch({type: route.loader.actionType, data});
-				store.dispatch({type: 'LOADED'});
-			}).catch(error => {
-				store.dispatch({type: 'SET_ERROR', error});
-				throw error;
-			});
-		};
-	}
-	if (route.childRoutes){
-		route.childRoutes.forEach(r => decorateRoutes(r, store));
-	}
-};
-
-export const save = (resource, getData, actionType, onSuccess) => (dispatch, getState) => {
-	dispatch({type: 'LOADING'});
-	request(resource, getData(getState())).then(data => {
-		dispatch({type: actionType, data});
-		dispatch({type: 'LOADED'});
-		if (onSuccess) onSuccess();
-	}).catch(error => {
-		console.error(error);
-		dispatch({type: 'SET_ERROR', error});
+export const request = (path, token, data) => {
+	var params = data ? {
+		method: 'POST',
+		mode: 'cors',
+		body: JSON.stringify(data),
+		headers: new Headers({
+			'Content-Type': 'application/json',
+			'Authorization': 'Bearer ' + token
+		})
+	} : {
+		headers: new Headers({
+			'Authorization': 'Bearer ' + token
+		})
+	};
+	return fetch(`http://localhost:3001/${path}`, params).then(response => {
+		if (response.ok){
+			return response.json();
+		} else {
+			console.log('not ok', response);
+			throw response.statusText;
+		}
 	});
 };
 
-export default request;
+export const post = (resource, getData, onSuccess, onError) => (dispatch, getState) => {
+	var state = getState();
+	dispatch({type: 'LOADING'});
+	request(resource, state.token, getData(state)).then(data => {
+		dispatch({type: 'LOADED'});
+		return onSuccess(data, state);
+	}).catch(error => {
+		dispatch({type: 'LOADED'});
+		console.error(error);
+		if (onError) onError(error, state);
+		else dispatch({type: 'SET_ERROR', error});
+	});
+};

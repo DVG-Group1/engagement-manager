@@ -1,7 +1,7 @@
 import React from 'react';
 import { MenuItem, FlatButton, Dialog, SelectField, DatePicker, TextField } from 'material-ui';
 import { connect } from 'react-redux';
-import { save } from '../../dataService';
+import { post } from '../../dataService';
 
 const ValueEditor = ({editRecord, editTableName, tables, editValue, displayNames, closeEditor, saveRecord, relationships}) => {
 
@@ -85,6 +85,10 @@ export default connect(
 	dispatch => ({
 		editValue: (key, value) => dispatch({type: 'EDIT_VALUE', key, value}),
 		closeEditor: () => dispatch({type: 'CLOSE_EDITOR'}),
-		saveRecord: editTableName => dispatch(save('saveRecord/' + editTableName, state => state.viewData.editRecord, 'LOAD_ALL_DATA'))
+		saveRecord: editTableName => dispatch(post(
+			'saveRecord/' + editTableName,
+			state => state.viewData.editRecord, 
+			data => dispatch({type: 'LOAD_ALL_DATA', data})
+		))
 	})
 )(ValueEditor);

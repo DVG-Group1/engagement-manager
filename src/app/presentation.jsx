@@ -2,10 +2,10 @@ import React from 'react';
 import AppBar from './appBar';
 import AppDrawer from './appDrawer';
 
-export default ({error, loading, routes, routeTitle, children}) => (
+export default ({error, loading, routes, routeTitle, loggedIn, children}) => (
 	<div>
-		<AppDrawer routes={routes} routeTitle={routeTitle} />
-		<AppBar routeTitle={routeTitle} />
+		{ loggedIn && <AppDrawer routes={routes} routeTitle={routeTitle} /> }
+		{ loggedIn && <AppBar routeTitle={routeTitle} /> }
 		<div style={{margin: 24}}>
 			{
 				error && (

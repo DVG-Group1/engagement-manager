@@ -1,40 +1,55 @@
 import React from 'react';
-import { AppBar, DropDownMenu, MenuItem } from 'material-ui';
-import { connect } from 'react-redux';
+import { AppBar, FlatButton, Popover, Menu, MenuItem } from 'material-ui';
 
-var Bar = ({userID, managers, routeTitle, changeUser, openDrawer}) => {
+var Bar = ({username, routeTitle, openDrawer, menuOpen, openMenu, closeMenu, logOut}) => {
 
-	var userSelector = (
-		<DropDownMenu
-			underlineStyle={{display: 'none'}}
-			labelStyle={{color: 'white'}}
-			value={userID}
-			onChange={(e,k,value) => changeUser(value)}
-			style={{marginTop: -4}}
-		>{
-			managers.map(p =>
-				<MenuItem key={p.id} value={p.id} primaryText={p.first_name + ' ' + p.last_name} />
-			)
-		}</DropDownMenu>
+	var rightMenu = (
+		<span>
+			<FlatButton
+				label={username || ' '}
+				onTouchTap={openMenu}
+				style={{color: 'white', marginTop: 6}}
+			/>
+			<Popover
+				open={menuOpen}
+				onRequestClose={closeMenu}
+			>
+				<Menu>
+					<MenuItem primaryText="Log Out" onTouchTap={logOut} />
+				</Menu>
+			</Popover>
+		</span>
 	);
 
 	return (
 		<AppBar
 			title={routeTitle}
 			onLeftIconButtonTouchTap={openDrawer}
-			iconElementRight={userSelector}
+			iconElementRight={rightMenu}
 		/>
 	);
 };
 
+
+import { connect } from 'react-redux';
+import { browserHistory } from 'react-router';
+
 export default connect(
-	(state, ownProps) => ({
-		userID: state.userID,
-		managers: state.data.people.filter(p => state.data.people.some(r => r.manager_id === p.id)),
-		routeTitle: ownProps.routeTitle
-	}),
+	(state, ownProps) => {
+		var user = state.data.people.find(p => p.id === state.userID);
+		return {
+			username: user ? user.first_name + ' ' + user.last_name: '',
+			routeTitle: ownProps.routeTitle,
+			menuOpen: state.menuOpen
+		};
+	},
 	dispatch => ({
-		changeUser: userID => dispatch({type: 'SET_USER_ID', userID}),
-		openDrawer: () => dispatch({type: 'OPEN_DRAWER'})
+		openDrawer: () => dispatch({type: 'OPEN_DRAWER'}),
+		openMenu: () => dispatch({type: 'OPEN_MENU'}),
+		closeMenu: () => dispatch({type: 'CLOSE_MENU'}),
+		logOut: () => {
+			dispatch({type: 'LOG_OUT'});
+			browserHistory.push('/login');
+		}
 	})
 )(Bar);

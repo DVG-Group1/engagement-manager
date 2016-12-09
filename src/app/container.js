@@ -10,6 +10,7 @@ export default connect(
 			if (subItem) routeTitle = route.label + ': ' + subItem.label;
 		}
 		return {
+			loggedIn: state.userID,
 			error: state.main.error,
 			loading: state.main.loading,
 			routes: ownProps.route.childRoutes,
