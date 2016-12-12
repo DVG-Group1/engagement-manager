@@ -11,8 +11,8 @@ export default connect(
 		}
 		return {
 			loggedIn: state.userID,
-			error: state.main.error,
-			loading: state.main.loading,
+			error: state.error,
+			loading: state.loading,
 			routes: ownProps.route.childRoutes,
 			routeParams: ownProps.params,
 			route,

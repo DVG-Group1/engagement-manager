@@ -1,17 +1,15 @@
 import React from 'react';
+import { CircularProgress } from 'material-ui';
 import AppBar from './appBar';
 import AppDrawer from './appDrawer';
+import ErrorMessage from './errorMessage';
 
 export default ({error, loading, routes, routeTitle, loggedIn, children}) => (
 	<div>
 		{ loggedIn && <AppDrawer routes={routes} routeTitle={routeTitle} /> }
 		{ loggedIn && <AppBar routeTitle={routeTitle} /> }
 		<div style={{margin: 24}}>
-			{
-				error && (
-					<div style={{margin: '50px 0'}}>{ error.message }</div>
-				)
-			}
+			<ErrorMessage />
 			{ children }
 		</div>
 
@@ -24,7 +22,9 @@ export default ({error, loading, routes, routeTitle, loggedIn, children}) => (
 			textAlign: 'center',
 			paddingTop: 200,
 			textShadow: '2px 5px 10px rgba(0,0,0,0.2)'
-		}}>loading...</div>
+		}}>
+			<CircularProgress size={128} thickness={7} />
+		</div>
 
 	</div>
 );

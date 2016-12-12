@@ -27,6 +27,7 @@ const decorateRoutes = (route, store) => {
 				}
 			});
 		}
+		window.scrollTo(0, 0);
 	};
 
 	if (route.childRoutes){

@@ -21,9 +21,9 @@ export default connect(
 				(data, state) => {
 					dispatch({type: 'SET_TOKEN', token: data.token});
 					ownProps.routes[0].onEnter();
-					browserHistory.push(state.main.redirect || '/home');
+					browserHistory.push(state.redirect || '/home');
 				},
-				() => dispatch({type: 'LOGIN_FAILED'})
+				error => dispatch(error === 'Unauthorized' ? {type: 'LOGIN_FAILED'} : {type: 'SET_ERROR', error})
 			));
 		},
 		changeUsername: e => dispatch({type: 'CHANGE_LOGIN_USERNAME', username: e.target.value}),

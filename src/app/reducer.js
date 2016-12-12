@@ -10,6 +10,7 @@ var appReducers = {
 		default: return state;
 		}
 	},
+
 	menuOpen: (state = false, action) => {
 		switch (action.type){
 		case 'CLOSE_MENU':
@@ -51,23 +52,25 @@ var appReducers = {
 		return action.type === 'RECEIVED_DATA' ? {...state, ...action.data} : state;
 	},
 
-	main: (state = {
-		loading: false,
-		error: false
-	}, action) => {
-		switch (action.type){
-		case 'LOADING': return {...state, loading: true};
-		case 'LOADED': return {...state, loading: false};
-		case 'SET_REDIRECT': return {...state, redirect: action.path};
-		case 'SET_ERROR':
+	loading: (state = false, action) => {
+		if (action.type === 'LOADING') return true;
+		else if (action.type === 'LOADED') return false;
+		return state;
+	},
+
+	redirect: (state = false, action) => {
+		if (action.type === 'SET_REDIRECT') return action.path;
+		return state;
+	},
+
+	error: (state = false, action) => {
+		if (action.type === 'SET_ERROR'){
 			window.scrollTo(0, 0);
-			return {...state, error: action.error, loading: false};
-		case '@@router/LOCATION_CHANGE':
-			window.scrollTo(0, 0);
-			return state;
-		default: return state;
+			return action.error.toString();
 		}
+		return state;
 	}
+
 };
 
 var reducers = app.childRoutes.reduce((res, route) => {
